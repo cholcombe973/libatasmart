@@ -1,0 +1,9 @@
+[package]
+name = "libatasmart"
+version = "0.1.0"
+authors = ["Chris Holcombe <xfactor973@gmail.com>"]
+
+[dependencies]
+# libatasmart-sys = "0.1.0"
+libatasmart-sys = {path = "/home/chris/repos/libatasmart-sys"}
+nix = "*"
