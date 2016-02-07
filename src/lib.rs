@@ -4,6 +4,7 @@ extern crate nix;
 use libatasmart_sys::*;
 use nix::errno::Errno;
 use std::ffi::CString;
+use std::path::{Path, PathBuf};
 
 #[test]
 fn test_smart(){
@@ -34,37 +35,48 @@ fn test_smart(){
     }
 }
 
-//TODO: Is it safe to return *mut raw pointer here?
-fn open_disk(disk: &str)->Result<*mut SkDisk, String>{
-    let device = CString::new(disk).unwrap();
-    let mut disk: *mut SkDisk = unsafe { std::mem::uninitialized() };
-    unsafe{
-        let ret = libatasmart_sys::sk_disk_open(device.as_ptr(), &mut disk);
-        if ret < 0{
-            let fail = nix::errno::errno();
-            return Err(Errno::from_i32(fail).desc().to_string());
-        }
-        return Ok(disk);
-    }
+pub struct Disk{
+    pub disk: PathBuf,
+    skdisk: *mut SkDisk,
 }
 
-fn free_disk(disk: &mut SkDisk)->Result<i32,String>{
-    unsafe{
-        sk_disk_free(disk);
-    }
-    return Ok(0);
-}
+impl Disk{
+    pub fn new(disk_path: &Path) -> Result<Disk, String>{
 
-pub fn get_disk_size(disk: *mut SkDisk)->Result<u64, String>{
-    unsafe{
-        let mut bytes: u64 = 0;
-        let ret = sk_disk_get_size(disk, &mut bytes);
-        if ret < 0{
-            let fail = nix::errno::errno();
-            return Err(Errno::from_i32(fail).desc().to_string());
+        let device = CString::new(disk_path.to_str().unwrap()).unwrap();
+        let mut disk: *mut SkDisk = unsafe { std::mem::uninitialized() };
+
+        unsafe{
+            let ret = libatasmart_sys::sk_disk_open(device.as_ptr(), &mut disk);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+
+            Ok(Disk{
+                disk: disk_path.to_path_buf(),
+                skdisk: disk,
+            })
         }
-        return Ok(bytes);
     }
+    fn drop(&mut self){
+        unsafe{
+            sk_disk_free(self.skdisk);
+        }
+    }
+
+    pub fn get_disk_size(&mut self)->Result<u64, String>{
+        unsafe{
+            let mut bytes: u64 = 0;
+            let ret = sk_disk_get_size(self.skdisk, &mut bytes);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            return Ok(bytes);
+        }
+    }
+
 }
 
 /*
