@@ -6,32 +6,18 @@ use nix::errno::Errno;
 use std::ffi::CString;
 use std::path::{Path, PathBuf};
 
-#[test]
-fn test_smart(){
-    let device = CString::new("/dev/sda").unwrap();
-    let mut disk: *mut SkDisk = unsafe { std::mem::uninitialized() };
-    let mut good: SkBool = 0;
-    unsafe{
-        //NOTE: Requires root privs
-        println!("opening disk");
-        let ret = libatasmart_sys::sk_disk_open(device.as_ptr(), &mut disk);
-        if ret < 0{
-            let fail = nix::errno::errno();
-            println!("sk_disk_open failed with error: {:?}", Errno::from_i32(fail));
-        }
-        println!("Success opening disk");
-        let ret = libatasmart_sys::sk_disk_smart_status(disk, &mut good);
-        if ret < 0{
-            let fail = nix::errno::errno();
-            println!("sk_disk_open failed with error: {:?}", Errno::from_i32(fail));
-        }
-        println!("Success getting smart status of {:?}", good);
-        println!("Dumping disk");
-        let ret = libatasmart_sys::sk_disk_dump(disk);
-        if ret < 0{
-            let fail = nix::errno::errno();
-            println!("sk_disk_dump failed with error: {:?}", Errno::from_i32(fail));
-        }
+#[cfg(test)]
+mod tests{
+    use std::path::Path;
+    use super::*;
+
+    #[test]
+    fn test_smart(){
+        let mut disk = Disk::new(Path::new("/dev/sda")).unwrap();
+        let ret = disk.get_smart_status();
+        println!("Smart status: {:?}", ret);
+        println!("Dumping disk stats");
+        let ret = disk.disk_dump();
     }
 }
 
@@ -59,12 +45,14 @@ impl Disk{
             })
         }
     }
+
     fn drop(&mut self){
         unsafe{
             sk_disk_free(self.skdisk);
         }
     }
 
+    /// Returns a u64 representing the size of the disk in bytes.
     pub fn get_disk_size(&mut self)->Result<u64, String>{
         unsafe{
             let mut bytes: u64 = 0;
@@ -77,6 +65,164 @@ impl Disk{
         }
     }
 
+    /// Returns a bool of true if sleep mode is supported, false otherwise.
+    pub fn check_sleep_mode(&mut self) -> Result<bool,String> {
+        unsafe{
+            let mut mode: SkBool = 0;
+            let ret = sk_disk_check_sleep_mode(self.skdisk, &mut mode);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            if mode == 0{
+                Ok(false)
+            }else{
+                Ok(true)
+            }
+        }
+    }
+
+    /// Returns a u64 representing the power on time in milliseconds
+    pub fn get_power_on(&mut self) -> Result<u64, String>{
+        unsafe{
+            let mut power_on_time:u64 = 0;
+            let ret = sk_disk_smart_get_power_on(self.skdisk, &mut power_on_time);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            Ok(power_on_time)
+        }
+    }
+
+    /// Returns a u64 representing the number of power on cycles
+    pub fn get_power_cycle_count(&mut self) -> Result<u64,String> {
+        unsafe{
+            let mut power_cycle_count:u64 = 0;
+            let ret = sk_disk_smart_get_power_cycle(self.skdisk, &mut power_cycle_count);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            Ok(power_cycle_count)
+        }
+    }
+
+    /// Returns a u64 representing the number of bad sections on the disk
+    pub fn get_bad_sectors(&mut self) -> Result<u64,String> {
+        unsafe{
+            let mut bad_sector_count: u64 = 0;
+            let ret = sk_disk_smart_get_bad(self.skdisk, &mut bad_sector_count);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            Ok(bad_sector_count)
+        }
+    }
+
+    /// Returns a u64 representing the mkelvin of the disk
+    pub fn get_temperature(&mut self) -> Result<u64,String> {
+        unsafe{
+            let mut mkelvin: u64 = 0;
+            let ret = sk_disk_smart_get_temperature(self.skdisk, &mut mkelvin);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            Ok(mkelvin)
+        }
+    }
+
+    /// Returns true if the disk passed smart, false otherwise.
+    pub fn get_smart_status(&mut self) -> Result<bool,String> {
+        unsafe{
+            let mut good: SkBool = 0;
+            let ret = sk_disk_smart_status(self.skdisk, &mut good);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            if good == 0{
+                Ok(false)
+            }else{
+                Ok(true)
+            }
+        }
+    }
+
+/*
+    pub fn get_overall(&mut self) -> {
+        unsafe{
+        d: *mut SkDisk, overall: *mut SkSmartOverall) -> ::libc::c_int;
+        }
+    }
+*/
+
+    pub fn dump(&mut self)->Result<(), String>{
+        unsafe{
+            let ret = sk_disk_dump(self.skdisk);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            Ok(())
+        }
+    }
+
+    pub fn identify_is_available(&mut self)->Result<bool, String>{
+        unsafe{
+            let mut available: SkBool = 0;
+            let ret = sk_disk_identify_is_available(self.skdisk, &mut available);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            if available == 0{
+                Ok(false)
+            }else{
+                Ok(true)
+            }
+        }
+    }
+
+    pub fn smart_is_available(&mut self)->Result<bool, String>{
+        unsafe{
+            let mut available: SkBool = 0;
+            let ret = sk_disk_smart_is_available(self.skdisk, &mut available);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            if available == 0{
+                Ok(false)
+            }else{
+                Ok(true)
+            }
+        }
+    }
+    pub fn execute_smart_self_test(&mut self, test_type: SkSmartSelfTest)->Result<(), String>{
+        unsafe{
+            let ret = sk_disk_smart_self_test(self.skdisk, test_type);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            Ok(())
+        }
+    }
+
+    pub fn smart_get_overall(&mut self)->Result<SkSmartOverall, String>{
+        unsafe{
+            let mut overall: SkSmartOverall = SkSmartOverall::SK_SMART_OVERALL_GOOD;
+            let ret = sk_disk_smart_get_overall(self.skdisk, &mut overall);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
+            Ok(overall)
+        }
+    }
 }
 
 /*
@@ -86,50 +232,11 @@ pub fn sk_smart_self_test_to_string(test: SkSmartSelfTest) -> *const ::libc::c_c
 pub fn sk_smart_self_test_polling_minutes(d: *const SkSmartParsedData, test: SkSmartSelfTest) -> uint32_t;
 pub fn sk_smart_attribute_unit_to_string(unit: SkSmartAttributeUnit) -> *const ::libc::c_char;
 pub fn sk_smart_overall_to_string(overall: SkSmartOverall) -> *const ::libc::c_char;
-pub fn sk_disk_open(name: *const ::libc::c_char, d: *mut *mut SkDisk) -> ::libc::c_int;
-pub fn sk_disk_get_size(d: *mut SkDisk, bytes: *mut uint64_t) -> ::libc::c_int;
 
-pub fn sk_disk_check_sleep_mode(d: *mut SkDisk, awake: *mut SkBool) -> ::libc::c_int;
-pub fn sk_disk_identify_is_available(d: *mut SkDisk, available: *mut SkBool) -> ::libc::c_int;
-pub fn sk_disk_identify_parse(d: *mut *mut SkDisk, data: *const SkIdentifyParsedData) -> ::libc::c_int;
-pub fn sk_disk_smart_is_available(d: *mut SkDisk, available: *mut SkBool) -> ::libc::c_int;
-pub fn sk_disk_smart_status(d: *mut SkDisk, good: *mut SkBool) -> ::libc::c_int;
-pub fn sk_disk_smart_read_data(d: *mut SkDisk) -> ::libc::c_int;
-pub fn sk_disk_get_blob(d: *mut *mut SkDisk, blob: *const ::libc::c_void, size: *mut size_t) -> ::libc::c_int;
-pub fn sk_disk_set_blob(d: *mut SkDisk, blob: *const ::libc::c_void, size: size_t) -> ::libc::c_int;
-pub fn sk_disk_smart_parse(d: *mut *mut SkDisk, data: *const SkSmartParsedData) -> ::libc::c_int;
-pub fn sk_disk_smart_self_test(d: *mut SkDisk, test: SkSmartSelfTest) -> ::libc::c_int;
-pub fn sk_disk_smart_get_power_on(d: *mut SkDisk, mseconds: *mut uint64_t) -> ::libc::c_int;
-pub fn sk_disk_smart_get_power_cycle(d: *mut SkDisk, count: *mut uint64_t) -> ::libc::c_int;
-pub fn sk_disk_smart_get_bad(d: *mut SkDisk, sectors: *mut uint64_t) -> ::libc::c_int;
-pub fn sk_disk_smart_get_temperature(d: *mut SkDisk, mkelvin: *mut uint64_t ) -> ::libc::c_int;
-pub fn sk_disk_smart_get_overall(d: *mut SkDisk, overall: *mut SkSmartOverall) -> ::libc::c_int;
-pub fn sk_disk_dump(d: *mut SkDisk) -> ::libc::c_int;
-pub fn sk_disk_free(d: *mut SkDisk) -> ::libc::c_void;
-pub fn sk_smart_self_test_execution_status_to_string(status: SkSmartSelfTestExecutionStatus) -> *const ::libc::c_char;
-pub fn sk_smart_offline_data_collection_status_to_string(status: SkSmartOfflineDataCollectionStatus) -> *const ::libc::c_char;
-pub fn sk_smart_self_test_to_string(test: SkSmartSelfTest) -> *const ::libc::c_char;
 pub fn sk_smart_self_test_available(d: *const SkSmartParsedData, test: SkSmartSelfTest) -> SkBool;
-pub fn sk_smart_self_test_polling_minutes(d: *const SkSmartParsedData, test: SkSmartSelfTest) -> uint32_t;
-pub fn sk_smart_attribute_unit_to_string(unit: SkSmartAttributeUnit) -> *const ::libc::c_char;
-pub fn sk_smart_overall_to_string(overall: SkSmartOverall) -> *const ::libc::c_char;
-pub fn sk_disk_open(name: *const ::libc::c_char, d: *mut *mut SkDisk) -> ::libc::c_int;
-pub fn sk_disk_get_size(d: *mut SkDisk, bytes: *mut uint64_t) -> ::libc::c_int;
-pub fn sk_disk_check_sleep_mode(d: *mut SkDisk, awake: *mut SkBool) -> ::libc::c_int;
-pub fn sk_disk_identify_is_available(d: *mut SkDisk, available: *mut SkBool) -> ::libc::c_int;
 pub fn sk_disk_identify_parse(d: *mut *mut SkDisk, data: *const SkIdentifyParsedData) -> ::libc::c_int;
-pub fn sk_disk_smart_is_available(d: *mut SkDisk, available: *mut SkBool) -> ::libc::c_int;
-pub fn sk_disk_smart_status(d: *mut SkDisk, good: *mut SkBool) -> ::libc::c_int;
 pub fn sk_disk_smart_read_data(d: *mut SkDisk) -> ::libc::c_int;
 pub fn sk_disk_get_blob(d: *mut *mut SkDisk, blob: *const ::libc::c_void, size: *mut size_t) -> ::libc::c_int;
 pub fn sk_disk_set_blob(d: *mut SkDisk, blob: *const ::libc::c_void, size: size_t) -> ::libc::c_int;
 pub fn sk_disk_smart_parse(d: *mut *mut SkDisk, data: *const SkSmartParsedData) -> ::libc::c_int;
-pub fn sk_disk_smart_self_test(d: *mut SkDisk, test: SkSmartSelfTest) -> ::libc::c_int;
-pub fn sk_disk_smart_get_power_on(d: *mut SkDisk, mseconds: *mut uint64_t) -> ::libc::c_int;
-pub fn sk_disk_smart_get_power_cycle(d: *mut SkDisk, count: *mut uint64_t) -> ::libc::c_int;
-pub fn sk_disk_smart_get_bad(d: *mut SkDisk, sectors: *mut uint64_t) -> ::libc::c_int;
-pub fn sk_disk_smart_get_temperature(d: *mut SkDisk, mkelvin: *mut uint64_t ) -> ::libc::c_int;
-pub fn sk_disk_smart_get_overall(d: *mut SkDisk, overall: *mut SkSmartOverall) -> ::libc::c_int;
-pub fn sk_disk_dump(d: *mut SkDisk) -> ::libc::c_int;
-pub fn sk_disk_free(d: *mut SkDisk) -> ::libc::c_void;
 */
