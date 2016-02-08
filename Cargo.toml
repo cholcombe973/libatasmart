@@ -1,9 +1,10 @@
 [package]
 name = "libatasmart"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Chris Holcombe <xfactor973@gmail.com>"]
 description = "A wrapper around libatasmart-sys raw bindings"
 license = "MIT"
+keywords = ["storage"]
 
 [dependencies]
 libatasmart-sys = "0.1.1"
