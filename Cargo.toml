@@ -2,8 +2,9 @@
 name = "libatasmart"
 version = "0.1.0"
 authors = ["Chris Holcombe <xfactor973@gmail.com>"]
+description = "A wrapper around libatasmart-sys raw bindings"
+license = "MIT"
 
 [dependencies]
-# libatasmart-sys = "0.1.0"
-libatasmart-sys = {path = "/home/chris/repos/libatasmart-sys"}
-nix = "*"
+libatasmart-sys = "0.1.1"
+nix = "0.4.2"
