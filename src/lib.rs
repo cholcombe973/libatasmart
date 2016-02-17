@@ -1,3 +1,12 @@
+//! A library to interface with libatasmart-sys.  For more information about libatasmart-sys see
+//! [libatasmart-sys](https://github.com/cholcombe973/libatasmart-sys)
+//! This library is useful for gathering ata smart information from your hard drives concerning
+//! their remaining lifetime.  The underlying libatasmart doesn't expose every possible metric like
+//! smartmontools but it does expose a few important ones like bad sector count and overall status.
+//! This also has the advantage of avoiding CLI calls and scraping the text output which makes it
+//! more reliable and also a lot more performant!
+//!
+
 extern crate libatasmart_sys;
 extern crate nix;
 
@@ -17,7 +26,7 @@ mod tests{
         let ret = disk.get_smart_status();
         println!("Smart status: {:?}", ret);
         println!("Dumping disk stats");
-        let ret = disk.disk_dump();
+        let ret = disk.dump();
     }
 }
 
