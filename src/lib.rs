@@ -151,14 +151,7 @@ impl Disk{
         }
     }
 
-/*
-    pub fn get_overall(&mut self) -> {
-        unsafe{
-        d: *mut SkDisk, overall: *mut SkSmartOverall) -> ::libc::c_int;
-        }
-    }
-*/
-
+    /// This will dump all available information to stdout about the drive
     pub fn dump(&mut self)->Result<(), String>{
         unsafe{
             let ret = sk_disk_dump(self.skdisk);
@@ -201,6 +194,7 @@ impl Disk{
             }
         }
     }
+
     pub fn execute_smart_self_test(&mut self, test_type: SkSmartSelfTest)->Result<(), String>{
         unsafe{
             let ret = sk_disk_smart_self_test(self.skdisk, test_type);
@@ -230,8 +224,6 @@ pub fn sk_smart_self_test_execution_status_to_string(status: SkSmartSelfTestExec
 pub fn sk_smart_offline_data_collection_status_to_string(status: SkSmartOfflineDataCollectionStatus) -> *const ::libc::c_char;
 pub fn sk_smart_self_test_to_string(test: SkSmartSelfTest) -> *const ::libc::c_char;
 pub fn sk_smart_self_test_polling_minutes(d: *const SkSmartParsedData, test: SkSmartSelfTest) -> uint32_t;
-pub fn sk_smart_attribute_unit_to_string(unit: SkSmartAttributeUnit) -> *const ::libc::c_char;
-pub fn sk_smart_overall_to_string(overall: SkSmartOverall) -> *const ::libc::c_char;
 
 pub fn sk_smart_self_test_available(d: *const SkSmartParsedData, test: SkSmartSelfTest) -> SkBool;
 pub fn sk_disk_identify_parse(d: *mut *mut SkDisk, data: *const SkIdentifyParsedData) -> ::libc::c_int;
