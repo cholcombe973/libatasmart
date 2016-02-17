@@ -1,8 +1,9 @@
 [package]
 name = "libatasmart"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Chris Holcombe <xfactor973@gmail.com>"]
-description = "A wrapper around libatasmart-sys raw bindings"
+description = "A wrapper around libatasmart-sys raw bindings."
+documentation = "https://cholcombe973.github.io/libatasmart/index.html"
 license = "MIT"
 keywords = ["storage"]
 
