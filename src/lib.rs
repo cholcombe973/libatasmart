@@ -15,6 +15,7 @@ use nix::errno::Errno;
 use std::ffi::CString;
 use std::path::{Path, PathBuf};
 
+/*
 #[cfg(test)]
 mod tests{
     use std::path::Path;
@@ -29,6 +30,7 @@ mod tests{
         let ret = disk.dump();
     }
 }
+*/
 
 pub struct Disk{
     pub disk: PathBuf,
