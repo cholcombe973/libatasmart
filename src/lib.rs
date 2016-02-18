@@ -32,12 +32,16 @@ mod tests{
 }
 */
 
+/// Our ata smart disk
 pub struct Disk{
+    /// The path in the filesystem to the hard drive
     pub disk: PathBuf,
     skdisk: *mut SkDisk,
 }
 
 impl Disk{
+    /// This will initialize a new Disk by asking libatasmart to open it.
+    /// Note that this requires root permissions usually to succeed.
     pub fn new(disk_path: &Path) -> Result<Disk, String>{
 
         let device = CString::new(disk_path.to_str().unwrap()).unwrap();
@@ -190,6 +194,7 @@ impl Disk{
         }
     }
 
+    /// Query the device and return whether or not smart is supported on it
     pub fn smart_is_available(&mut self)->Result<bool, String>{
         unsafe{
             let mut available: SkBool = 0;
