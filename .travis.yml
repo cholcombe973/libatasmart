@@ -2,30 +2,27 @@ language: rust
 addons:
   apt:
     packages:
-      - libatasmart-dev
+    - libatasmart-dev
 rust:
-  - stable
-
+- stable
 before_script:
-  - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
+- pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
 script:
-  - |
-      travis-cargo build &&
-      travis-cargo test &&
-      travis-cargo --only stable doc
+- |
+  travis-cargo build &&
+  travis-cargo test &&
+  travis-cargo --only stable doc
 after_success:
-  - travis-cargo --only stable doc-upload
-  # - travis-cargo coveralls --no-sudo --verify
+- travis-cargo --only stable doc-upload
 env:
   global:
-    # override the default `--features unstable` used for the nightly branch (optional)
-    - TRAVIS_CARGO_NIGHTLY_FEATURE=""
-    - secure: "L3oertPwahXDjaugaVyCmyVPZwieOIgBiGKYH4NlbJRQjTltHnY6RErD1fm/MXL0wUEWeKv6PaJh17re2bMo58NwzBOrIqvIL2WYoetApJIPNtLC12CX7RMsGqELP7SszR7+HXUtswX1hpAAQGX7p/IOSjJx6VhQwyIUQY/7tD9iAn0w8Z7iZ/iKvLZXj2Kp8UpPOaAVOt87fdQzq6QnriBYQ2svaapNBPs4VHL0CDX7B06WlaaNMMUgXLoOZRQ10BtYrGS4RMbxey0sCezL6Gf/gWBtE7kpyQqIwLe5Yh4XMIMEOyqLxkKBCw1b4FZrIUNMi4HIQYYla56H10B/6rhz9A00YYtFKbCENRKJqeuwXvi4GCcfWsZ8egLVBzvBQCR4gP7cLwupejZe5iZY50pfB5/PZ4+f1uDmBJr/vZBaUjl3br/G/vqJtsKzmWGfRhc7gFmVH6D6+pY18JMATCvIz9WpCIPR7etEatoUWwSLk/y7ZLu2FVkP2GvypSuRpIaZGV6HyhLoffRrKX4bF7YT16pJQRoaGW6biPE1PDEbVW6o9HHsoM6n8oGcWYMWb54c/Ea15iZ5/HykUfP3dNE4sVhoQPfZslpGZYjuAcL0cXS+t7sx9i1ZfGE8hMjIABmoZvG02OJSZJ9Bzysy+ARCts0J/oNSIVyQzLE40kc="
+  - TRAVIS_CARGO_NIGHTLY_FEATURE=""
+  - secure: ju/JL1in142rFoWQc46oUYtn5GWsibU9fWHYQFqXubQefcSq0g6gc/yvZTYX5iB0dubtwoSd2gAIuaoxFu6/BgkLNyA5OgrFM++EKixkHxu4P06l91R9QTISAl9pu8uF+NNpGalxMBfHtRFYJTvPIOsSGlOCQiYHVDqzA8r66djO01gtOIhZt1NDalLsA2vImTRT8PzhKPGiZ/KeK4mHpRHMIsl+PrV/wdiBpM/BA7qXgmcDRF7i4ZstWJCEbNNFi0yzEaHgNgaoqMXJv0BWyPQHIuHVM7QGO2lGKPMQ1T/qQMf72lEV828Bz1W+HaGWeEnzy1sXQ5iGg+kVxR+jvI0Q9Kml3KfDbJTCgKmI0SwAK++Du5EoRHGIgIdN8QuZPV4K01YgWasvtzFlytZHT3clYBITwcT8SrraeYKPLoERrlaV5k7ISGP49PDm3YyQWasKxlH1/nKjXV2cyuy2zglNqbThh0x36ONhQqw3jRtPNNwQuOdD7B/+N63/VT8kpXsH614emTr+fzsjqX4rcuNx7t6WgSr5kWYlSDkBNwqwQTKCn9ihuOcYjUyFfARQnURPkNdKAcq+NmhNtQZKXmvGvB8zttNZcR8htuiu5rMJ3UnjZiug6x4oUUnICeGNKsCA8Zti6cYUlHzuCfvPjR4YisfGeWeEADF7LGUFbXo=
 cache:
   apt: true
   rust-download: true
   directories:
-    - ~/.cargo
+  - "~/.cargo"
 notifications:
   email:
     on_success: never
