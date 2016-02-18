@@ -4,14 +4,8 @@ addons:
     packages:
       - libatasmart-dev
 rust:
-  - nightly
-  - beta
   - stable
-matrix:
-  allow_failures:
-    - rust:
-      - nightly
-      - beta
+  
 before_script:
   - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
 script:
