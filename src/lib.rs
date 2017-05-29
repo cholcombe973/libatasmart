@@ -54,6 +54,11 @@ impl Disk{
                 return Err(Errno::from_i32(fail).desc().to_string());
             }
 
+            let ret = libatasmart_sys::sk_disk_smart_read_data(disk);
+            if ret < 0{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail).desc().to_string());
+            }
             Ok(Disk{
                 disk: disk_path.to_path_buf(),
                 skdisk: disk,
