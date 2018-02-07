@@ -43,7 +43,6 @@ impl Disk{
     /// This will initialize a new Disk by asking libatasmart to open it.
     /// Note that this requires root permissions usually to succeed.
     pub fn new(disk_path: &Path) -> Result<Disk, String>{
-
         let device = CString::new(disk_path.to_str().unwrap()).unwrap();
         let mut disk: *mut SkDisk = unsafe { std::mem::uninitialized() };
 
@@ -66,11 +65,6 @@ impl Disk{
         }
     }
 
-    fn drop(&mut self){
-        unsafe{
-            sk_disk_free(self.skdisk);
-        }
-    }
 
     /// Returns a u64 representing the size of the disk in bytes.
     pub fn get_disk_size(&mut self)->Result<u64, String>{
@@ -236,6 +230,14 @@ impl Disk{
                 return Err(Errno::from_i32(fail).desc().to_string());
             }
             Ok(overall)
+        }
+    }
+}
+
+impl Drop for Disk {
+	fn drop(&mut self){
+        unsafe{
+            sk_disk_free(self.skdisk);
         }
     }
 }

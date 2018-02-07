@@ -1,6 +1,6 @@
 [package]
 name = "libatasmart"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["Chris Holcombe <xfactor973@gmail.com>"]
 description = "A wrapper around libatasmart-sys raw bindings."
 documentation = "https://cholcombe973.github.io/libatasmart/index.html"
