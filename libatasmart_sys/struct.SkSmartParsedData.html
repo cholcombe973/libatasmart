@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `SkSmartParsedData` struct in crate `libatasmart_sys`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, SkSmartParsedData">
+
+    <title>libatasmart_sys::SkSmartParsedData - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct SkSmartParsedData</p><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.offline_data_collection_status">offline_data_collection_status</a><a href="#structfield.total_offline_data_collection_seconds">total_offline_data_collection_seconds</a><a href="#structfield.self_test_execution_status">self_test_execution_status</a><a href="#structfield.self_test_execution_percent_remaining">self_test_execution_percent_remaining</a><a href="#structfield.short_and_extended_test_available">short_and_extended_test_available</a><a href="#structfield.conveyance_test_available">conveyance_test_available</a><a href="#structfield.start_test_available">start_test_available</a><a href="#structfield.abort_test_available">abort_test_available</a><a href="#structfield.short_test_polling_minutes">short_test_polling_minutes</a><a href="#structfield.extended_test_polling_minutes">extended_test_polling_minutes</a><a href="#structfield.conveyance_test_polling_minutes">conveyance_test_polling_minutes</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Debug">Debug</a></div></div><p class='location'><a href='index.html'>libatasmart_sys</a></p><script>window.sidebarCurrent = {name: 'SkSmartParsedData', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>libatasmart_sys</a>::<wbr><a class="struct" href=''>SkSmartParsedData</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/libatasmart_sys/lib.rs.html#58-74' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'><div class="docblock attributes">#[repr(C)]
+</div>pub struct SkSmartParsedData {
+    pub offline_data_collection_status: <a class="enum" href="../libatasmart_sys/enum.SkSmartOfflineDataCollectionStatus.html" title="enum libatasmart_sys::SkSmartOfflineDataCollectionStatus">SkSmartOfflineDataCollectionStatus</a>,
+    pub total_offline_data_collection_seconds: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a>,
+    pub self_test_execution_status: <a class="enum" href="../libatasmart_sys/enum.SkSmartSelfTestExecutionStatus.html" title="enum libatasmart_sys::SkSmartSelfTestExecutionStatus">SkSmartSelfTestExecutionStatus</a>,
+    pub self_test_execution_percent_remaining: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a>,
+    pub short_and_extended_test_available: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub conveyance_test_available: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub start_test_available: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub abort_test_available: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub short_test_polling_minutes: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a>,
+    pub extended_test_polling_minutes: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a>,
+    pub conveyance_test_polling_minutes: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a>,
+}</pre><h2 id='fields' class='fields small-section-header'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.offline_data_collection_status" class="structfield small-section-header">
+                           <a href="#structfield.offline_data_collection_status" class="anchor field"></a>
+                           <span id="offline_data_collection_status.v" class='invisible'>
+                           <code>offline_data_collection_status: <a class="enum" href="../libatasmart_sys/enum.SkSmartOfflineDataCollectionStatus.html" title="enum libatasmart_sys::SkSmartOfflineDataCollectionStatus">SkSmartOfflineDataCollectionStatus</a></code>
+                           </span></span><span id="structfield.total_offline_data_collection_seconds" class="structfield small-section-header">
+                           <a href="#structfield.total_offline_data_collection_seconds" class="anchor field"></a>
+                           <span id="total_offline_data_collection_seconds.v" class='invisible'>
+                           <code>total_offline_data_collection_seconds: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a></code>
+                           </span></span><span id="structfield.self_test_execution_status" class="structfield small-section-header">
+                           <a href="#structfield.self_test_execution_status" class="anchor field"></a>
+                           <span id="self_test_execution_status.v" class='invisible'>
+                           <code>self_test_execution_status: <a class="enum" href="../libatasmart_sys/enum.SkSmartSelfTestExecutionStatus.html" title="enum libatasmart_sys::SkSmartSelfTestExecutionStatus">SkSmartSelfTestExecutionStatus</a></code>
+                           </span></span><span id="structfield.self_test_execution_percent_remaining" class="structfield small-section-header">
+                           <a href="#structfield.self_test_execution_percent_remaining" class="anchor field"></a>
+                           <span id="self_test_execution_percent_remaining.v" class='invisible'>
+                           <code>self_test_execution_percent_remaining: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a></code>
+                           </span></span><span id="structfield.short_and_extended_test_available" class="structfield small-section-header">
+                           <a href="#structfield.short_and_extended_test_available" class="anchor field"></a>
+                           <span id="short_and_extended_test_available.v" class='invisible'>
+                           <code>short_and_extended_test_available: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.conveyance_test_available" class="structfield small-section-header">
+                           <a href="#structfield.conveyance_test_available" class="anchor field"></a>
+                           <span id="conveyance_test_available.v" class='invisible'>
+                           <code>conveyance_test_available: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.start_test_available" class="structfield small-section-header">
+                           <a href="#structfield.start_test_available" class="anchor field"></a>
+                           <span id="start_test_available.v" class='invisible'>
+                           <code>start_test_available: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.abort_test_available" class="structfield small-section-header">
+                           <a href="#structfield.abort_test_available" class="anchor field"></a>
+                           <span id="abort_test_available.v" class='invisible'>
+                           <code>abort_test_available: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.short_test_polling_minutes" class="structfield small-section-header">
+                           <a href="#structfield.short_test_polling_minutes" class="anchor field"></a>
+                           <span id="short_test_polling_minutes.v" class='invisible'>
+                           <code>short_test_polling_minutes: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a></code>
+                           </span></span><span id="structfield.extended_test_polling_minutes" class="structfield small-section-header">
+                           <a href="#structfield.extended_test_polling_minutes" class="anchor field"></a>
+                           <span id="extended_test_polling_minutes.v" class='invisible'>
+                           <code>extended_test_polling_minutes: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a></code>
+                           </span></span><span id="structfield.conveyance_test_polling_minutes" class="structfield small-section-header">
+                           <a href="#structfield.conveyance_test_polling_minutes" class="anchor field"></a>
+                           <span id="conveyance_test_polling_minutes.v" class='invisible'>
+                           <code>conveyance_test_polling_minutes: <a class="type" href="../libc/type.uint32_t.html" title="type libc::uint32_t">uint32_t</a></code>
+                           </span></span>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../libatasmart_sys/struct.SkSmartParsedData.html" title="struct libatasmart_sys::SkSmartParsedData">SkSmartParsedData</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/libatasmart_sys/lib.rs.html#57' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/libatasmart_sys/lib.rs.html#57' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>↑</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>↓</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt style="width:31px;">+ / -</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "libatasmart_sys";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

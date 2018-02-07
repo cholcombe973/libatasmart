@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `SkSmartAttributeParsedData` struct in crate `libatasmart_sys`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, SkSmartAttributeParsedData">
+
+    <title>libatasmart_sys::SkSmartAttributeParsedData - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct SkSmartAttributeParsedData</p><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.id">id</a><a href="#structfield.name">name</a><a href="#structfield.pretty_unit">pretty_unit</a><a href="#structfield.flags">flags</a><a href="#structfield.threshold">threshold</a><a href="#structfield.threshold_valid">threshold_valid</a><a href="#structfield.online">online</a><a href="#structfield.prefailure">prefailure</a><a href="#structfield.good_now">good_now</a><a href="#structfield.good_now_valid">good_now_valid</a><a href="#structfield.good_in_the_past">good_in_the_past</a><a href="#structfield.good_in_the_past_valid">good_in_the_past_valid</a><a href="#structfield.current_value_valid">current_value_valid</a><a href="#structfield.worst_value_valid">worst_value_valid</a><a href="#structfield.warn">warn</a><a href="#structfield.current_value">current_value</a><a href="#structfield.worst_value">worst_value</a><a href="#structfield.pretty_value">pretty_value</a><a href="#structfield.raw">raw</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Debug">Debug</a></div></div><p class='location'><a href='index.html'>libatasmart_sys</a></p><script>window.sidebarCurrent = {name: 'SkSmartAttributeParsedData', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>libatasmart_sys</a>::<wbr><a class="struct" href=''>SkSmartAttributeParsedData</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/libatasmart_sys/lib.rs.html#94-114' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'><div class="docblock attributes">#[repr(C)]
+</div>pub struct SkSmartAttributeParsedData {
+    pub id: <a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a>,
+    pub name: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="type" href="../libc/unix/notbsd/linux/other/b64/x86_64/type.c_char.html" title="type libc::unix::notbsd::linux::other::b64::x86_64::c_char">c_char</a>,
+    pub pretty_unit: <a class="enum" href="../libatasmart_sys/enum.SkSmartAttributeUnit.html" title="enum libatasmart_sys::SkSmartAttributeUnit">SkSmartAttributeUnit</a>,
+    pub flags: <a class="type" href="../libc/type.uint16_t.html" title="type libc::uint16_t">uint16_t</a>,
+    pub threshold: <a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a>,
+    pub threshold_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub online: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub prefailure: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub good_now: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub good_now_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub good_in_the_past: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub good_in_the_past_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub current_value_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub worst_value_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub warn: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a>,
+    pub current_value: <a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a>,
+    pub worst_value: <a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a>,
+    pub pretty_value: <a class="type" href="../libc/type.uint64_t.html" title="type libc::uint64_t">uint64_t</a>,
+    pub raw: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 6]</a>,
+}</pre><h2 id='fields' class='fields small-section-header'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.id" class="structfield small-section-header">
+                           <a href="#structfield.id" class="anchor field"></a>
+                           <span id="id.v" class='invisible'>
+                           <code>id: <a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a></code>
+                           </span></span><span id="structfield.name" class="structfield small-section-header">
+                           <a href="#structfield.name" class="anchor field"></a>
+                           <span id="name.v" class='invisible'>
+                           <code>name: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.pointer.html">*const </a><a class="type" href="../libc/unix/notbsd/linux/other/b64/x86_64/type.c_char.html" title="type libc::unix::notbsd::linux::other::b64::x86_64::c_char">c_char</a></code>
+                           </span></span><span id="structfield.pretty_unit" class="structfield small-section-header">
+                           <a href="#structfield.pretty_unit" class="anchor field"></a>
+                           <span id="pretty_unit.v" class='invisible'>
+                           <code>pretty_unit: <a class="enum" href="../libatasmart_sys/enum.SkSmartAttributeUnit.html" title="enum libatasmart_sys::SkSmartAttributeUnit">SkSmartAttributeUnit</a></code>
+                           </span></span><span id="structfield.flags" class="structfield small-section-header">
+                           <a href="#structfield.flags" class="anchor field"></a>
+                           <span id="flags.v" class='invisible'>
+                           <code>flags: <a class="type" href="../libc/type.uint16_t.html" title="type libc::uint16_t">uint16_t</a></code>
+                           </span></span><span id="structfield.threshold" class="structfield small-section-header">
+                           <a href="#structfield.threshold" class="anchor field"></a>
+                           <span id="threshold.v" class='invisible'>
+                           <code>threshold: <a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a></code>
+                           </span></span><span id="structfield.threshold_valid" class="structfield small-section-header">
+                           <a href="#structfield.threshold_valid" class="anchor field"></a>
+                           <span id="threshold_valid.v" class='invisible'>
+                           <code>threshold_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.online" class="structfield small-section-header">
+                           <a href="#structfield.online" class="anchor field"></a>
+                           <span id="online.v" class='invisible'>
+                           <code>online: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.prefailure" class="structfield small-section-header">
+                           <a href="#structfield.prefailure" class="anchor field"></a>
+                           <span id="prefailure.v" class='invisible'>
+                           <code>prefailure: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.good_now" class="structfield small-section-header">
+                           <a href="#structfield.good_now" class="anchor field"></a>
+                           <span id="good_now.v" class='invisible'>
+                           <code>good_now: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.good_now_valid" class="structfield small-section-header">
+                           <a href="#structfield.good_now_valid" class="anchor field"></a>
+                           <span id="good_now_valid.v" class='invisible'>
+                           <code>good_now_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.good_in_the_past" class="structfield small-section-header">
+                           <a href="#structfield.good_in_the_past" class="anchor field"></a>
+                           <span id="good_in_the_past.v" class='invisible'>
+                           <code>good_in_the_past: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.good_in_the_past_valid" class="structfield small-section-header">
+                           <a href="#structfield.good_in_the_past_valid" class="anchor field"></a>
+                           <span id="good_in_the_past_valid.v" class='invisible'>
+                           <code>good_in_the_past_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.current_value_valid" class="structfield small-section-header">
+                           <a href="#structfield.current_value_valid" class="anchor field"></a>
+                           <span id="current_value_valid.v" class='invisible'>
+                           <code>current_value_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.worst_value_valid" class="structfield small-section-header">
+                           <a href="#structfield.worst_value_valid" class="anchor field"></a>
+                           <span id="worst_value_valid.v" class='invisible'>
+                           <code>worst_value_valid: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.warn" class="structfield small-section-header">
+                           <a href="#structfield.warn" class="anchor field"></a>
+                           <span id="warn.v" class='invisible'>
+                           <code>warn: <a class="type" href="../libatasmart_sys/type.SkBool.html" title="type libatasmart_sys::SkBool">SkBool</a></code>
+                           </span></span><span id="structfield.current_value" class="structfield small-section-header">
+                           <a href="#structfield.current_value" class="anchor field"></a>
+                           <span id="current_value.v" class='invisible'>
+                           <code>current_value: <a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a></code>
+                           </span></span><span id="structfield.worst_value" class="structfield small-section-header">
+                           <a href="#structfield.worst_value" class="anchor field"></a>
+                           <span id="worst_value.v" class='invisible'>
+                           <code>worst_value: <a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a></code>
+                           </span></span><span id="structfield.pretty_value" class="structfield small-section-header">
+                           <a href="#structfield.pretty_value" class="anchor field"></a>
+                           <span id="pretty_value.v" class='invisible'>
+                           <code>pretty_value: <a class="type" href="../libc/type.uint64_t.html" title="type libc::uint64_t">uint64_t</a></code>
+                           </span></span><span id="structfield.raw" class="structfield small-section-header">
+                           <a href="#structfield.raw" class="anchor field"></a>
+                           <span id="raw.v" class='invisible'>
+                           <code>raw: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a><a class="type" href="../libc/type.uint8_t.html" title="type libc::uint8_t">uint8_t</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 6]</a></code>
+                           </span></span>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../libatasmart_sys/struct.SkSmartAttributeParsedData.html" title="struct libatasmart_sys::SkSmartAttributeParsedData">SkSmartAttributeParsedData</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/libatasmart_sys/lib.rs.html#93' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/libatasmart_sys/lib.rs.html#93' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>↑</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>↓</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt style="width:31px;">+ / -</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "libatasmart_sys";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

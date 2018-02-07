@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Disk","Our ata smart disk"]]});
