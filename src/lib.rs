@@ -50,12 +50,14 @@ impl Disk{
             let ret = libatasmart_sys::sk_disk_open(device.as_ptr(), &mut disk);
             if ret < 0{
                 let fail = nix::errno::errno();
+                sk_disk_free(disk);
                 return Err(Errno::from_i32(fail).desc().to_string());
             }
 
             let ret = libatasmart_sys::sk_disk_smart_read_data(disk);
             if ret < 0{
                 let fail = nix::errno::errno();
+                sk_disk_free(disk);
                 return Err(Errno::from_i32(fail).desc().to_string());
             }
             Ok(Disk{
