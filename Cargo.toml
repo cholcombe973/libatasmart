@@ -3,12 +3,14 @@ name = "libatasmart"
 version = "0.1.7"
 authors = ["Chris Holcombe <xfactor973@gmail.com>"]
 description = "A wrapper around libatasmart-sys raw bindings."
-documentation = "https://cholcombe973.github.io/libatasmart/index.html"
+documentation = "https://docs.rs/libatasmart/index.html"
 homepage = "https://github.com/cholcombe973/libatasmart"
 repository = "https://github.com/cholcombe973/libatasmart"
 license = "MIT"
 keywords = ["storage"]
+edition = '2018'
 
 [dependencies]
+derive-error = "0.0"
 libatasmart-sys = "~0.1"
 nix = "~0.8"
