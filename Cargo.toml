@@ -1,9 +1,11 @@
 [package]
 name = "libatasmart"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Chris Holcombe <xfactor973@gmail.com>"]
 description = "A wrapper around libatasmart-sys raw bindings."
 documentation = "https://cholcombe973.github.io/libatasmart/index.html"
+homepage = "https://github.com/cholcombe973/libatasmart"
+repository = "https://github.com/cholcombe973/libatasmart"
 license = "MIT"
 keywords = ["storage"]
 
