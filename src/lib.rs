@@ -79,6 +79,25 @@ impl Disk {
         }
     }
 
+    /// Refreshes cached SMART attribute values.
+    ///
+    /// SMART attribute values are read once in Disk::new and cached. Methods such as
+    /// `get_temperature` use these cached values and do not access the disk. Call this method to
+    /// refresh the cached values.
+    ///
+    /// Note: calling this method might cause the disk to wake up from sleep. Consider checking if
+    /// the disk is asleep using `check_sleep_mode` before calling this method to avoid this.
+    pub fn refresh_smart_data(&mut self) -> Result<(), Errno> {
+        unsafe {
+            let ret = sk_disk_smart_read_data(self.skdisk);
+            if ret < 0 {
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail));
+            }
+            Ok(())
+        }
+    }
+
     /// Returns a u64 representing the size of the disk in bytes.
     pub fn get_disk_size(&mut self) -> Result<u64, Errno> {
         unsafe {
