@@ -13,12 +13,19 @@ use nix::errno::Errno;
 use std::{ffi::CString, path::{Path, PathBuf}, mem::MaybeUninit};
 pub use libatasmart_sys::SkSmartSelfTest;
 
-/*
 #[cfg(test)]
-mod tests{
-    use std::path::Path;
+mod tests {
     use super::*;
+    use std::path::Path;
 
+    #[test]
+    fn test_new_failure() {
+        match Disk::new(Path::new("/dev/null")) {
+            Ok(_) => panic!("Opening /dev/null succeeded"),
+            Err(e) => assert_eq!(Errno::ENODEV, e),
+        }
+    }
+    /*
     #[test]
     fn test_smart(){
         let mut disk = Disk::new(Path::new("/dev/sda")).unwrap();
@@ -27,8 +34,8 @@ mod tests{
         println!("Dumping disk stats");
         let ret = disk.dump();
     }
+    */
 }
-*/
 
 #[derive(Debug, de::Error)]
 pub enum Err {
@@ -54,8 +61,8 @@ impl Disk {
         unsafe {
             let ret = libatasmart_sys::sk_disk_open(device.as_ptr(), &mut disk);
             if ret < 0 {
+                // Do not call sk_disk_free here, sk_disk_open already did that.
                 let fail = nix::errno::errno();
-                sk_disk_free(disk);
                 return Err(Errno::from_i32(fail));
             }
 
