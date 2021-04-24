@@ -7,7 +7,6 @@
 //! more reliable and also a lot more performant!
 //!
 
-use derive_error as de;
 use libatasmart_sys::*;
 use nix::errno::Errno;
 use std::{ffi::CString, path::{Path, PathBuf}, mem::MaybeUninit};
@@ -36,13 +35,6 @@ mod tests {
         let ret = disk.dump();
     }
     */
-}
-
-#[derive(Debug, de::Error)]
-pub enum Err {
-    #[error(message_embedded, non_std, no_from)]
-    Err(String),
-    Io(std::io::Error),
 }
 
 /// Our ata smart disk
