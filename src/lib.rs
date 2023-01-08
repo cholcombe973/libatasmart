@@ -9,7 +9,7 @@
 
 use libatasmart_sys::*;
 use nix::errno::Errno;
-use std::{ffi::CString, path::{Path, PathBuf}, mem::MaybeUninit};
+use std::{ffi::{CString, CStr}, path::{Path, PathBuf}, mem::MaybeUninit};
 pub use libatasmart_sys::SkSmartSelfTest;
 pub extern crate nix;
 
@@ -235,6 +235,35 @@ impl Disk {
         }
     }
 
+    // This is a lower level function that is used to build new smart functions
+    fn parse_attributes(&mut self, parser_callback: extern "C" fn(*mut SkDisk, *const SkSmartAttributeParsedData, *mut std::ffi::c_void)) -> Result<(), Errno> 
+    {
+        unsafe {
+            let ret = sk_disk_smart_parse_attributes(self.skdisk, parser_callback, std::ptr::null_mut());
+            if ret < 0 {
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail));
+            }
+            Ok(())
+        }
+    }
+
+    /// Query the device and return whether or not a particular smart test is supported on it
+    pub fn smart_test_available(
+        &mut self,
+        test_attributes: &mut SkSmartParsedData,
+        test_type: SkSmartSelfTest,
+    ) -> Result<bool, Errno> {
+        unsafe {
+            let available = sk_smart_self_test_available(test_attributes, test_type);
+            if available == 0 {
+                Ok(false)
+            } else {
+                Ok(true)
+            }
+        }
+    }
+
     pub fn execute_smart_self_test(&mut self, test_type: SkSmartSelfTest) -> Result<(), Errno> {
         unsafe {
             let ret = sk_disk_smart_self_test(self.skdisk, test_type);
@@ -267,15 +296,44 @@ impl Drop for Disk {
     }
 }
 
-/*
-pub fn sk_smart_self_test_execution_status_to_string(status: SkSmartSelfTestExecutionStatus) -> *const ::libc::c_char;
-pub fn sk_smart_offline_data_collection_status_to_string(status: SkSmartOfflineDataCollectionStatus) -> *const ::libc::c_char;
-pub fn sk_smart_self_test_to_string(test: SkSmartSelfTest) -> *const ::libc::c_char;
-pub fn sk_smart_self_test_polling_minutes(d: *const SkSmartParsedData, test: SkSmartSelfTest) -> uint32_t;
+/// Helper fn. I believe this function returns how many minutes it takes to run a particular type of smart test
+/// but it's not entirely clear and the original source code doesn't have a comment
+pub fn smart_test_polling_minutes(test_attributes: &SkSmartParsedData, test: SkSmartSelfTest) -> u32 {
+    unsafe {
+        sk_smart_self_test_polling_minutes(test_attributes, test)
+    }
+}
 
-pub fn sk_smart_self_test_available(d: *const SkSmartParsedData, test: SkSmartSelfTest) -> SkBool;
+/// Helper fn. Transforms a SkSmartSelfTest into a String
+pub fn smart_test_to_string(test: SkSmartSelfTest) -> String {
+    unsafe {
+        let str_ptr = sk_smart_self_test_to_string(test);
+        let c_str = CStr::from_ptr(str_ptr);
+        c_str.to_string_lossy().into_owned()
+    }
+}
+
+/// Helper fn. Transforms an SkSmartOfflineDataCollectionStatus into a String
+pub fn get_offline_collection_status_as_string(status: SkSmartOfflineDataCollectionStatus) -> String {
+    unsafe {
+        let str_ptr = sk_smart_offline_data_collection_status_to_string(status);
+        let c_str = CStr::from_ptr(str_ptr);
+        c_str.to_string_lossy().into_owned()
+    }
+}
+
+/// Helper fn. Transforms an SkSmartSelfTestExecutionStatus into a String
+pub fn get_smart_status_as_string(status: SkSmartSelfTestExecutionStatus) -> String {
+    unsafe {
+        let str_ptr = sk_smart_self_test_execution_status_to_string(status);
+        let c_str = CStr::from_ptr(str_ptr);
+        c_str.to_string_lossy().into_owned()
+    }
+}
+
+
+/*
 pub fn sk_disk_identify_parse(d: *mut *mut SkDisk, data: *const SkIdentifyParsedData) -> ::libc::c_int;
-pub fn sk_disk_smart_read_data(d: *mut SkDisk) -> ::libc::c_int;
 pub fn sk_disk_get_blob(d: *mut *mut SkDisk, blob: *const ::libc::c_void, size: *mut size_t) -> ::libc::c_int;
 pub fn sk_disk_set_blob(d: *mut SkDisk, blob: *const ::libc::c_void, size: size_t) -> ::libc::c_int;
 pub fn sk_disk_smart_parse(d: *mut *mut SkDisk, data: *const SkSmartParsedData) -> ::libc::c_int;

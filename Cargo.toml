@@ -11,5 +11,5 @@ keywords = ["storage"]
 edition = '2018'
 
 [dependencies]
-libatasmart-sys = "~0.1"
-nix = "~0.17"
+libatasmart-sys = "~0.2"
+nix = "~0.26"
