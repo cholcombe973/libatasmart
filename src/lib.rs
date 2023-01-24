@@ -9,7 +9,7 @@
 
 use libatasmart_sys::*;
 use nix::errno::Errno;
-use std::{ffi::{CString, CStr}, path::{Path, PathBuf}, mem::MaybeUninit};
+use std::{ffi::{CString, CStr}, path::{Path, PathBuf}, mem::MaybeUninit, ptr::null};
 pub use libatasmart_sys::SkSmartSelfTest;
 pub extern crate nix;
 
@@ -42,6 +42,13 @@ pub struct Disk {
     /// The path in the filesystem to the hard drive
     pub disk: PathBuf,
     skdisk: *mut SkDisk,
+}
+
+#[derive(Debug)]
+pub struct IdentifyParsedData{
+    pub serial: String,
+    pub firmware: String,
+    pub model: String,
 }
 
 impl Disk {
@@ -236,7 +243,7 @@ impl Disk {
     }
 
     // This is a lower level function that is used to build new smart functions
-    fn parse_attributes(&mut self, parser_callback: extern "C" fn(*mut SkDisk, *const SkSmartAttributeParsedData, *mut std::ffi::c_void)) -> Result<(), Errno> 
+    pub fn parse_attributes(&mut self, parser_callback: extern "C" fn(*mut SkDisk, *const SkSmartAttributeParsedData, *mut std::ffi::c_void)) -> Result<(), Errno> 
     {
         unsafe {
             let ret = sk_disk_smart_parse_attributes(self.skdisk, parser_callback, std::ptr::null_mut());
@@ -284,6 +291,36 @@ impl Disk {
                 return Err(Errno::from_i32(fail));
             }
             Ok(overall)
+        }
+    }
+
+    // Get the model, firmware, and serial of the disk as a IdentifyParsedDatastruct
+    pub fn identify_parse(&mut self) -> Result<IdentifyParsedData, Errno> {
+        let mut available: SkBool = 0;
+        unsafe {
+            sk_disk_identify_is_available(self.skdisk, &mut available);
+            if available == 1{
+                let parsed_data_pointer: *const SkIdentifyParsedData = null();
+                let ret = sk_disk_identify_parse(self.skdisk, &parsed_data_pointer);
+                if ret < 0 {
+                    let fail = nix::errno::errno();
+                    return Err(Errno::from_i32(fail));
+                }
+                let model = CStr::from_ptr((*parsed_data_pointer).model.as_ptr()).to_str().unwrap();
+                let firmware = CStr::from_ptr((*parsed_data_pointer).firmware.as_ptr()).to_str().unwrap();
+                let serial = CStr::from_ptr((*parsed_data_pointer).serial.as_ptr()).to_str().unwrap();
+                
+                let parsed_data: IdentifyParsedData = IdentifyParsedData {
+                    serial: String::from(serial),
+                    firmware: String::from(firmware),
+                    model: String::from(model)
+                };
+                Ok(parsed_data)
+            }
+            else{
+                let fail = nix::errno::errno();
+                return Err(Errno::from_i32(fail));
+            }
         }
     }
 }
