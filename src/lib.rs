@@ -294,7 +294,8 @@ impl Disk {
         }
     }
 
-    // Get the model, firmware, and serial of the disk as a IdentifyParsedDatastruct
+    /// Get the model, firmware, and serial of the disk as a IdentifyParsedDatastruct
+    /// If Errno::EINVAL gets returned there is a problem with the C string parser
     pub fn identify_parse(&mut self) -> Result<IdentifyParsedData, Errno> {
         let mut available: SkBool = 0;
         unsafe {
