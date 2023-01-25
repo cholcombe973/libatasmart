@@ -306,9 +306,15 @@ impl Disk {
                     let fail = nix::errno::errno();
                     return Err(Errno::from_i32(fail));
                 }
-                let model = CStr::from_ptr((*parsed_data_pointer).model.as_ptr()).to_str().unwrap();
-                let firmware = CStr::from_ptr((*parsed_data_pointer).firmware.as_ptr()).to_str().unwrap();
-                let serial = CStr::from_ptr((*parsed_data_pointer).serial.as_ptr()).to_str().unwrap();
+                let model = CStr::from_ptr((*parsed_data_pointer).model.as_ptr()).to_str().unwrap_or_else(|_error|{
+                    ""
+                });
+                let firmware = CStr::from_ptr((*parsed_data_pointer).firmware.as_ptr()).to_str().unwrap_or_else(|_error|{
+                    ""
+                });
+                let serial = CStr::from_ptr((*parsed_data_pointer).serial.as_ptr()).to_str().unwrap_or_else(|_error|{
+                    ""
+                });
                 
                 let parsed_data: IdentifyParsedData = IdentifyParsedData {
                     serial: String::from(serial),
