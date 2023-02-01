@@ -9,7 +9,7 @@
 
 use libatasmart_sys::*;
 use nix::errno::Errno;
-use std::{ffi::{CString, CStr}, path::{Path, PathBuf}, mem::MaybeUninit, ptr::null};
+use std::{ffi::{CString, CStr, c_void}, path::{Path, PathBuf}, mem::MaybeUninit, ptr::null};
 pub use libatasmart_sys::SkSmartSelfTest;
 pub extern crate nix;
 
@@ -243,10 +243,10 @@ impl Disk {
     }
 
     // This is a lower level function that is used to build new smart functions
-    pub fn parse_attributes(&mut self, parser_callback: extern "C" fn(*mut SkDisk, *const SkSmartAttributeParsedData, *mut std::ffi::c_void)) -> Result<(), Errno> 
+    pub fn parse_attributes(&mut self, parser_callback: extern "C" fn(*mut SkDisk, *const SkSmartAttributeParsedData, *mut std::ffi::c_void), userdata: *mut c_void) -> Result<(), Errno> 
     {
         unsafe {
-            let ret = sk_disk_smart_parse_attributes(self.skdisk, parser_callback, std::ptr::null_mut());
+            let ret = sk_disk_smart_parse_attributes(self.skdisk, parser_callback, userdata);
             if ret < 0 {
                 let fail = nix::errno::errno();
                 return Err(Errno::from_i32(fail));
