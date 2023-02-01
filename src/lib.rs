@@ -243,7 +243,7 @@ impl Disk {
     }
 
     // This is a lower level function that is used to build new smart functions
-    pub fn parse_attributes(&mut self, parser_callback: extern "C" fn(*mut SkDisk, *const SkSmartAttributeParsedData, *mut std::ffi::c_void), userdata: *mut c_void ) -> Result<(), Errno> 
+    pub fn parse_attributes(&mut self, parser_callback: extern "C" fn(*mut SkDisk, *const SkSmartAttributeParsedData, *mut std::ffi::c_void), userdata: *mut c_void) -> Result<(), Errno> 
     {
         unsafe {
             let ret = sk_disk_smart_parse_attributes(self.skdisk, parser_callback, userdata);
