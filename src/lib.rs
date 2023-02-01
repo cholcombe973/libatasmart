@@ -8,7 +8,7 @@
 //!
 
 use libatasmart_sys::*;
-use nix::{errno::Errno, libc::user};
+use nix::{errno::Errno};
 use std::{ffi::{CString, CStr, c_void}, path::{Path, PathBuf}, mem::MaybeUninit, ptr::null};
 pub use libatasmart_sys::SkSmartSelfTest;
 pub extern crate nix;
