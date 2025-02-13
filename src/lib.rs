@@ -12,6 +12,7 @@ use nix::errno::Errno;
 use std::{ffi::{CString, CStr, c_void}, path::{Path, PathBuf}, mem::MaybeUninit, ptr::null};
 pub use libatasmart_sys::SkSmartSelfTest;
 pub extern crate nix;
+pub extern crate libatasmart_sys;
 
 #[cfg(test)]
 mod tests {
