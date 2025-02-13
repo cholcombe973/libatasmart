@@ -62,15 +62,15 @@ impl Disk {
             let ret = libatasmart_sys::sk_disk_open(device.as_ptr(), &mut disk);
             if ret < 0 {
                 // Do not call sk_disk_free here, sk_disk_open already did that.
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
 
             let ret = libatasmart_sys::sk_disk_smart_read_data(disk);
             if ret < 0 {
-                let fail = nix::errno::errno();
+                let fail = nix::errno::Errno::last_raw();
                 sk_disk_free(disk);
-                return Err(Errno::from_i32(fail));
+                return Err(Errno::from_raw(fail));
             }
             Ok(Disk {
                 disk: disk_path.to_path_buf(),
@@ -91,8 +91,8 @@ impl Disk {
         unsafe {
             let ret = sk_disk_smart_read_data(self.skdisk);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             Ok(())
         }
@@ -104,8 +104,8 @@ impl Disk {
             let mut bytes: u64 = 0;
             let ret = sk_disk_get_size(self.skdisk, &mut bytes);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             return Ok(bytes);
         }
@@ -117,8 +117,8 @@ impl Disk {
             let mut mode: SkBool = 0;
             let ret = sk_disk_check_sleep_mode(self.skdisk, &mut mode);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             if mode == 0 {
                 Ok(false)
@@ -134,8 +134,8 @@ impl Disk {
             let mut power_on_time: u64 = 0;
             let ret = sk_disk_smart_get_power_on(self.skdisk, &mut power_on_time);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             Ok(power_on_time)
         }
@@ -147,8 +147,8 @@ impl Disk {
             let mut power_cycle_count: u64 = 0;
             let ret = sk_disk_smart_get_power_cycle(self.skdisk, &mut power_cycle_count);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             Ok(power_cycle_count)
         }
@@ -160,8 +160,8 @@ impl Disk {
             let mut bad_sector_count: u64 = 0;
             let ret = sk_disk_smart_get_bad(self.skdisk, &mut bad_sector_count);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             Ok(bad_sector_count)
         }
@@ -173,8 +173,8 @@ impl Disk {
             let mut mkelvin: u64 = 0;
             let ret = sk_disk_smart_get_temperature(self.skdisk, &mut mkelvin);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             Ok(mkelvin)
         }
@@ -186,8 +186,8 @@ impl Disk {
             let mut good: SkBool = 0;
             let ret = sk_disk_smart_status(self.skdisk, &mut good);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             if good == 0 {
                 Ok(false)
@@ -202,8 +202,8 @@ impl Disk {
         unsafe {
             let ret = sk_disk_dump(self.skdisk);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             Ok(())
         }
@@ -214,8 +214,8 @@ impl Disk {
             let mut available: SkBool = 0;
             let ret = sk_disk_identify_is_available(self.skdisk, &mut available);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             if available == 0 {
                 Ok(false)
@@ -231,8 +231,8 @@ impl Disk {
             let mut available: SkBool = 0;
             let ret = sk_disk_smart_is_available(self.skdisk, &mut available);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             if available == 0 {
                 Ok(false)
@@ -248,8 +248,8 @@ impl Disk {
         unsafe {
             let ret = sk_disk_smart_parse_attributes(self.skdisk, parser_callback, userdata);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             Ok(())
         }
@@ -275,8 +275,8 @@ impl Disk {
         unsafe {
             let ret = sk_disk_smart_self_test(self.skdisk, test_type);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             Ok(())
         }
@@ -287,8 +287,8 @@ impl Disk {
             let mut overall: SkSmartOverall = SkSmartOverall::SK_SMART_OVERALL_GOOD;
             let ret = sk_disk_smart_get_overall(self.skdisk, &mut overall);
             if ret < 0 {
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
             Ok(overall)
         }
@@ -304,8 +304,8 @@ impl Disk {
                 let parsed_data_pointer: *const SkIdentifyParsedData = null();
                 let ret = sk_disk_identify_parse(self.skdisk, &parsed_data_pointer);
                 if ret < 0 {
-                    let fail = nix::errno::errno();
-                    return Err(Errno::from_i32(fail));
+                  let fail = nix::errno::Errno::last_raw();
+                  return Err(Errno::from_raw(fail));
                 }
                 let model = CStr::from_ptr((*parsed_data_pointer).model.as_ptr()).to_str().map_err(|_| Errno::EINVAL)?;
                 let firmware = CStr::from_ptr((*parsed_data_pointer).firmware.as_ptr()).to_str().map_err(|_| Errno::EINVAL)?;
@@ -319,8 +319,8 @@ impl Disk {
                 Ok(parsed_data)
             }
             else{
-                let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                let fail = nix::errno::Errno::last_raw();
+                return Err(Errno::from_raw(fail));
             }
         }
     }
