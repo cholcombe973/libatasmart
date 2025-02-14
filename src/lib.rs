@@ -346,10 +346,12 @@ impl Disk {
 
 impl Drop for Disk {
     fn drop(&mut self) {
-        let skdisk = self.skdisk.lock().unwrap();
-        if !skdisk.is_null() {
-            unsafe {
-                sk_disk_free(*skdisk);
+        if Arc::strong_count(&self.skdisk) == 1 {
+            let skdisk = self.skdisk.lock().unwrap();
+            if !skdisk.is_null() {
+                unsafe {
+                    sk_disk_free(*skdisk);
+                }
             }
         }
     }
