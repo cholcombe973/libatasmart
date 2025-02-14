@@ -9,7 +9,7 @@
 
 use libatasmart_sys::*;
 use nix::errno::Errno;
-use std::{ffi::{CString, CStr}, path::{Path, PathBuf}, mem::MaybeUninit, ptr::null};
+use std::{ffi::{CStr, CString}, mem::MaybeUninit, path::{Path, PathBuf}, ptr::null, sync::{Arc, Mutex}};
 pub use libatasmart_sys::SkSmartSelfTest;
 pub extern crate nix;
 pub extern crate libatasmart_sys;
@@ -43,7 +43,7 @@ mod tests {
 pub struct Disk {
     /// The path in the filesystem to the hard drive
     pub disk: PathBuf,
-    skdisk: *mut SkDisk,
+    skdisk: Arc<Mutex<*mut SkDisk>>,
 }
 
 #[derive(Clone, Debug)]
@@ -77,7 +77,7 @@ impl Disk {
             }
             Ok(Disk {
                 disk: disk_path.to_path_buf(),
-                skdisk: disk,
+                skdisk: Arc::new(Mutex::new(disk)),
             })
         }
     }
@@ -92,7 +92,8 @@ impl Disk {
     /// the disk is asleep using `check_sleep_mode` before calling this method to avoid this.
     pub fn refresh_smart_data(&mut self) -> Result<(), Errno> {
         unsafe {
-            let ret = sk_disk_smart_read_data(self.skdisk);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_read_data(*skdisk);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -105,7 +106,8 @@ impl Disk {
     pub fn get_disk_size(&mut self) -> Result<u64, Errno> {
         unsafe {
             let mut bytes: u64 = 0;
-            let ret = sk_disk_get_size(self.skdisk, &mut bytes);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_get_size(*skdisk, &mut bytes);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -118,7 +120,8 @@ impl Disk {
     pub fn check_sleep_mode(&mut self) -> Result<bool, Errno> {
         unsafe {
             let mut mode: SkBool = 0;
-            let ret = sk_disk_check_sleep_mode(self.skdisk, &mut mode);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_check_sleep_mode(*skdisk, &mut mode);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -135,7 +138,8 @@ impl Disk {
     pub fn get_power_on(&mut self) -> Result<u64, Errno> {
         unsafe {
             let mut power_on_time: u64 = 0;
-            let ret = sk_disk_smart_get_power_on(self.skdisk, &mut power_on_time);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_get_power_on(*skdisk, &mut power_on_time);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -148,7 +152,8 @@ impl Disk {
     pub fn get_power_cycle_count(&mut self) -> Result<u64, Errno> {
         unsafe {
             let mut power_cycle_count: u64 = 0;
-            let ret = sk_disk_smart_get_power_cycle(self.skdisk, &mut power_cycle_count);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_get_power_cycle(*skdisk, &mut power_cycle_count);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -161,7 +166,8 @@ impl Disk {
     pub fn get_bad_sectors(&mut self) -> Result<u64, Errno> {
         unsafe {
             let mut bad_sector_count: u64 = 0;
-            let ret = sk_disk_smart_get_bad(self.skdisk, &mut bad_sector_count);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_get_bad(*skdisk, &mut bad_sector_count);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -174,7 +180,8 @@ impl Disk {
     pub fn get_temperature(&mut self) -> Result<u64, Errno> {
         unsafe {
             let mut mkelvin: u64 = 0;
-            let ret = sk_disk_smart_get_temperature(self.skdisk, &mut mkelvin);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_get_temperature(*skdisk, &mut mkelvin);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -187,7 +194,8 @@ impl Disk {
     pub fn get_smart_status(&mut self) -> Result<bool, Errno> {
         unsafe {
             let mut good: SkBool = 0;
-            let ret = sk_disk_smart_status(self.skdisk, &mut good);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_status(*skdisk, &mut good);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -203,7 +211,8 @@ impl Disk {
     /// This will dump all available information to stdout about the drive
     pub fn dump(&mut self) -> Result<(), Errno> {
         unsafe {
-            let ret = sk_disk_dump(self.skdisk);
+          let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_dump(*skdisk);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -215,7 +224,8 @@ impl Disk {
     pub fn identify_is_available(&mut self) -> Result<bool, Errno> {
         unsafe {
             let mut available: SkBool = 0;
-            let ret = sk_disk_identify_is_available(self.skdisk, &mut available);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_identify_is_available(*skdisk, &mut available);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -232,7 +242,8 @@ impl Disk {
     pub fn smart_is_available(&mut self) -> Result<bool, Errno> {
         unsafe {
             let mut available: SkBool = 0;
-            let ret = sk_disk_smart_is_available(self.skdisk, &mut available);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_is_available(*skdisk, &mut available);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -249,7 +260,8 @@ impl Disk {
     pub fn parse_attributes(&mut self, parser_callback: extern "C" fn(*mut SkDisk, *const SkSmartAttributeParsedData, *mut std::ffi::c_void), userdata: *mut std::ffi::c_void) -> Result<(), Errno> 
     {
         unsafe {
-            let ret = sk_disk_smart_parse_attributes(self.skdisk, parser_callback, userdata);
+          let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_parse_attributes(*skdisk, parser_callback, userdata);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -276,7 +288,8 @@ impl Disk {
 
     pub fn execute_smart_self_test(&mut self, test_type: SkSmartSelfTest) -> Result<(), Errno> {
         unsafe {
-            let ret = sk_disk_smart_self_test(self.skdisk, test_type);
+          let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_self_test(*skdisk, test_type);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -288,7 +301,8 @@ impl Disk {
     pub fn smart_get_overall(&mut self) -> Result<SkSmartOverall, Errno> {
         unsafe {
             let mut overall: SkSmartOverall = SkSmartOverall::SK_SMART_OVERALL_GOOD;
-            let ret = sk_disk_smart_get_overall(self.skdisk, &mut overall);
+            let skdisk = self.skdisk.lock().unwrap();
+            let ret = sk_disk_smart_get_overall(*skdisk, &mut overall);
             if ret < 0 {
                 let fail = nix::errno::Errno::last_raw();
                 return Err(Errno::from_raw(fail));
@@ -302,10 +316,11 @@ impl Disk {
     pub fn identify_parse(&mut self) -> Result<IdentifyParsedData, Errno> {
         let mut available: SkBool = 0;
         unsafe {
-            sk_disk_identify_is_available(self.skdisk, &mut available);
+            let skdisk = self.skdisk.lock().unwrap();
+            sk_disk_identify_is_available(*skdisk, &mut available);
             if available == 1{
                 let parsed_data_pointer: *const SkIdentifyParsedData = null();
-                let ret = sk_disk_identify_parse(self.skdisk, &parsed_data_pointer);
+                let ret = sk_disk_identify_parse(*skdisk, &parsed_data_pointer);
                 if ret < 0 {
                   let fail = nix::errno::Errno::last_raw();
                   return Err(Errno::from_raw(fail));
@@ -331,9 +346,10 @@ impl Disk {
 
 impl Drop for Disk {
     fn drop(&mut self) {
-        if !self.skdisk.is_null() {
+        let skdisk = self.skdisk.lock().unwrap();
+        if !skdisk.is_null() {
             unsafe {
-                sk_disk_free(self.skdisk);
+                sk_disk_free(*skdisk);
             }
         }
     }
