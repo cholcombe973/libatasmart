@@ -9,7 +9,7 @@
 
 use libatasmart_sys::*;
 use nix::errno::Errno;
-use std::{ffi::{CString, CStr, c_void}, path::{Path, PathBuf}, mem::MaybeUninit, ptr::null};
+use std::{ffi::{CString, CStr}, path::{Path, PathBuf}, mem::MaybeUninit, ptr::null};
 pub use libatasmart_sys::SkSmartSelfTest;
 pub extern crate nix;
 pub extern crate libatasmart_sys;
@@ -39,13 +39,14 @@ mod tests {
 }
 
 /// Our ata smart disk
+#[derive(Clone, Debug)]
 pub struct Disk {
     /// The path in the filesystem to the hard drive
     pub disk: PathBuf,
     skdisk: *mut SkDisk,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct IdentifyParsedData{
     pub serial: String,
     pub firmware: String,
