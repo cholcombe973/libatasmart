@@ -58,7 +58,8 @@ impl Disk {
     /// Note that this requires root permissions usually to succeed.
     pub fn new(disk_path: &Path) -> Result<Disk, Errno> {
         let device = CString::new(disk_path.to_str().unwrap()).unwrap();
-        let mut disk = MaybeUninit::<SkDisk>::uninit().as_mut_ptr();
+        let mut disk = MaybeUninit::<SkDisk>::uninit();
+        let mut disk = disk.as_mut_ptr();
 
         unsafe {
             let ret = libatasmart_sys::sk_disk_open(device.as_ptr(), &mut disk);
@@ -330,8 +331,10 @@ impl Disk {
 
 impl Drop for Disk {
     fn drop(&mut self) {
-        unsafe {
-            sk_disk_free(self.skdisk);
+        if !self.skdisk.is_null() {
+            unsafe {
+                sk_disk_free(self.skdisk);
+            }
         }
     }
 }
