@@ -11,5 +11,5 @@ keywords = ["storage"]
 edition = '2018'
 
 [dependencies]
-libatasmart-sys = { git = "https://github.com/SpikeHD/libatasmart-sys", branch = "master" }
+libatasmart-sys = "0.2.0"
 nix = "0.29"
