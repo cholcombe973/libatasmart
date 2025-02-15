@@ -7,10 +7,15 @@
 //! more reliable and also a lot more performant!
 //!
 
+pub use libatasmart_sys::SkSmartSelfTest;
 use libatasmart_sys::*;
 use nix::errno::Errno;
-use std::{ffi::{CString, CStr, c_void}, path::{Path, PathBuf}, mem::MaybeUninit, ptr::null};
-pub use libatasmart_sys::SkSmartSelfTest;
+use std::{
+    ffi::{c_void, CStr, CString},
+    mem::MaybeUninit,
+    path::{Path, PathBuf},
+    ptr::null,
+};
 pub extern crate nix;
 
 #[cfg(test)]
@@ -45,7 +50,7 @@ pub struct Disk {
 }
 
 #[derive(Debug)]
-pub struct IdentifyParsedData{
+pub struct IdentifyParsedData {
     pub serial: String,
     pub firmware: String,
     pub model: String,
@@ -56,7 +61,8 @@ impl Disk {
     /// Note that this requires root permissions usually to succeed.
     pub fn new(disk_path: &Path) -> Result<Disk, Errno> {
         let device = CString::new(disk_path.to_str().unwrap()).unwrap();
-        let mut disk = MaybeUninit::<SkDisk>::uninit().as_mut_ptr();
+        let mut disk = MaybeUninit::<SkDisk>::uninit();
+        let mut disk = disk.as_mut_ptr();
 
         unsafe {
             let ret = libatasmart_sys::sk_disk_open(device.as_ptr(), &mut disk);
@@ -107,7 +113,7 @@ impl Disk {
                 let fail = nix::errno::errno();
                 return Err(Errno::from_i32(fail));
             }
-            return Ok(bytes);
+            Ok(bytes)
         }
     }
 
@@ -242,9 +248,20 @@ impl Disk {
         }
     }
 
-    // This is a lower level function that is used to build new smart functions
-    pub fn parse_attributes(&mut self, parser_callback: extern "C" fn(*mut SkDisk, *const SkSmartAttributeParsedData, *mut std::ffi::c_void), userdata: *mut c_void) -> Result<(), Errno> 
-    {
+    /// This is a lower level function that is used to build new smart functions
+    /// # Safety
+    ///
+    /// This function is unsafe because it dereferences raw pointers and calls an external C function.
+    /// The caller must ensure that `parser_callback` and `userdata` are valid and that `self.skdisk` is properly initialized.
+    pub unsafe fn parse_attributes(
+        &mut self,
+        parser_callback: extern "C" fn(
+            *mut SkDisk,
+            *const SkSmartAttributeParsedData,
+            *mut std::ffi::c_void,
+        ),
+        userdata: *mut c_void,
+    ) -> Result<(), Errno> {
         unsafe {
             let ret = sk_disk_smart_parse_attributes(self.skdisk, parser_callback, userdata);
             if ret < 0 {
@@ -300,27 +317,32 @@ impl Disk {
         let mut available: SkBool = 0;
         unsafe {
             sk_disk_identify_is_available(self.skdisk, &mut available);
-            if available == 1{
+            if available == 1 {
                 let parsed_data_pointer: *const SkIdentifyParsedData = null();
                 let ret = sk_disk_identify_parse(self.skdisk, &parsed_data_pointer);
                 if ret < 0 {
                     let fail = nix::errno::errno();
                     return Err(Errno::from_i32(fail));
                 }
-                let model = CStr::from_ptr((*parsed_data_pointer).model.as_ptr()).to_str().map_err(|_| Errno::EINVAL)?;
-                let firmware = CStr::from_ptr((*parsed_data_pointer).firmware.as_ptr()).to_str().map_err(|_| Errno::EINVAL)?;
-                let serial = CStr::from_ptr((*parsed_data_pointer).serial.as_ptr()).to_str().map_err(|_| Errno::EINVAL)?;
-                
+                let model = CStr::from_ptr((*parsed_data_pointer).model.as_ptr())
+                    .to_str()
+                    .map_err(|_| Errno::EINVAL)?;
+                let firmware = CStr::from_ptr((*parsed_data_pointer).firmware.as_ptr())
+                    .to_str()
+                    .map_err(|_| Errno::EINVAL)?;
+                let serial = CStr::from_ptr((*parsed_data_pointer).serial.as_ptr())
+                    .to_str()
+                    .map_err(|_| Errno::EINVAL)?;
+
                 let parsed_data: IdentifyParsedData = IdentifyParsedData {
                     serial: String::from(serial),
                     firmware: String::from(firmware),
-                    model: String::from(model)
+                    model: String::from(model),
                 };
                 Ok(parsed_data)
-            }
-            else{
+            } else {
                 let fail = nix::errno::errno();
-                return Err(Errno::from_i32(fail));
+                Err(Errno::from_i32(fail))
             }
         }
     }
@@ -336,10 +358,11 @@ impl Drop for Disk {
 
 /// Helper fn. I believe this function returns how many minutes it takes to run a particular type of smart test
 /// but it's not entirely clear and the original source code doesn't have a comment
-pub fn smart_test_polling_minutes(test_attributes: &SkSmartParsedData, test: SkSmartSelfTest) -> u32 {
-    unsafe {
-        sk_smart_self_test_polling_minutes(test_attributes, test)
-    }
+pub fn smart_test_polling_minutes(
+    test_attributes: &SkSmartParsedData,
+    test: SkSmartSelfTest,
+) -> u32 {
+    unsafe { sk_smart_self_test_polling_minutes(test_attributes, test) }
 }
 
 /// Helper fn. Transforms a SkSmartSelfTest into a String
@@ -352,7 +375,9 @@ pub fn smart_test_to_string(test: SkSmartSelfTest) -> String {
 }
 
 /// Helper fn. Transforms an SkSmartOfflineDataCollectionStatus into a String
-pub fn get_offline_collection_status_as_string(status: SkSmartOfflineDataCollectionStatus) -> String {
+pub fn get_offline_collection_status_as_string(
+    status: SkSmartOfflineDataCollectionStatus,
+) -> String {
     unsafe {
         let str_ptr = sk_smart_offline_data_collection_status_to_string(status);
         let c_str = CStr::from_ptr(str_ptr);
@@ -368,7 +393,6 @@ pub fn get_smart_status_as_string(status: SkSmartSelfTestExecutionStatus) -> Str
         c_str.to_string_lossy().into_owned()
     }
 }
-
 
 /*
 pub fn sk_disk_identify_parse(d: *mut *mut SkDisk, data: *const SkIdentifyParsedData) -> ::libc::c_int;
