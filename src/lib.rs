@@ -49,7 +49,7 @@ pub struct Disk {
     skdisk: *mut SkDisk,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct IdentifyParsedData {
     pub serial: String,
     pub firmware: String,
