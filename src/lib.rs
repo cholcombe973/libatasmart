@@ -93,7 +93,7 @@ impl Disk {
     ///
     /// Note: calling this method might cause the disk to wake up from sleep. Consider checking if
     /// the disk is asleep using `check_sleep_mode` before calling this method to avoid this.
-    pub fn refresh_smart_data(&mut self) -> Result<(), Errno> {
+    pub fn refresh_smart_data(&self) -> Result<(), Errno> {
         unsafe {
             let ret = sk_disk_smart_read_data(self.skdisk);
             if ret < 0 {
@@ -105,7 +105,7 @@ impl Disk {
     }
 
     /// Returns a u64 representing the size of the disk in bytes.
-    pub fn get_disk_size(&mut self) -> Result<u64, Errno> {
+    pub fn get_disk_size(&self) -> Result<u64, Errno> {
         unsafe {
             let mut bytes: u64 = 0;
             let ret = sk_disk_get_size(self.skdisk, &mut bytes);
@@ -118,7 +118,7 @@ impl Disk {
     }
 
     /// Returns a bool of true if sleep mode is supported, false otherwise.
-    pub fn check_sleep_mode(&mut self) -> Result<bool, Errno> {
+    pub fn check_sleep_mode(&self) -> Result<bool, Errno> {
         unsafe {
             let mut mode: SkBool = 0;
             let ret = sk_disk_check_sleep_mode(self.skdisk, &mut mode);
@@ -135,7 +135,7 @@ impl Disk {
     }
 
     /// Returns a u64 representing the power on time in milliseconds
-    pub fn get_power_on(&mut self) -> Result<u64, Errno> {
+    pub fn get_power_on(&self) -> Result<u64, Errno> {
         unsafe {
             let mut power_on_time: u64 = 0;
             let ret = sk_disk_smart_get_power_on(self.skdisk, &mut power_on_time);
@@ -148,7 +148,7 @@ impl Disk {
     }
 
     /// Returns a u64 representing the number of power on cycles
-    pub fn get_power_cycle_count(&mut self) -> Result<u64, Errno> {
+    pub fn get_power_cycle_count(&self) -> Result<u64, Errno> {
         unsafe {
             let mut power_cycle_count: u64 = 0;
             let ret = sk_disk_smart_get_power_cycle(self.skdisk, &mut power_cycle_count);
@@ -161,7 +161,7 @@ impl Disk {
     }
 
     /// Returns a u64 representing the number of bad sections on the disk
-    pub fn get_bad_sectors(&mut self) -> Result<u64, Errno> {
+    pub fn get_bad_sectors(&self) -> Result<u64, Errno> {
         unsafe {
             let mut bad_sector_count: u64 = 0;
             let ret = sk_disk_smart_get_bad(self.skdisk, &mut bad_sector_count);
@@ -174,7 +174,7 @@ impl Disk {
     }
 
     /// Returns a u64 representing the mkelvin of the disk
-    pub fn get_temperature(&mut self) -> Result<u64, Errno> {
+    pub fn get_temperature(&self) -> Result<u64, Errno> {
         unsafe {
             let mut mkelvin: u64 = 0;
             let ret = sk_disk_smart_get_temperature(self.skdisk, &mut mkelvin);
@@ -187,7 +187,7 @@ impl Disk {
     }
 
     /// Returns true if the disk passed smart, false otherwise.
-    pub fn get_smart_status(&mut self) -> Result<bool, Errno> {
+    pub fn get_smart_status(&self) -> Result<bool, Errno> {
         unsafe {
             let mut good: SkBool = 0;
             let ret = sk_disk_smart_status(self.skdisk, &mut good);
@@ -204,7 +204,7 @@ impl Disk {
     }
 
     /// This will dump all available information to stdout about the drive
-    pub fn dump(&mut self) -> Result<(), Errno> {
+    pub fn dump(&self) -> Result<(), Errno> {
         unsafe {
             let ret = sk_disk_dump(self.skdisk);
             if ret < 0 {
@@ -215,7 +215,7 @@ impl Disk {
         }
     }
 
-    pub fn identify_is_available(&mut self) -> Result<bool, Errno> {
+    pub fn identify_is_available(&self) -> Result<bool, Errno> {
         unsafe {
             let mut available: SkBool = 0;
             let ret = sk_disk_identify_is_available(self.skdisk, &mut available);
@@ -232,7 +232,7 @@ impl Disk {
     }
 
     /// Query the device and return whether or not smart is supported on it
-    pub fn smart_is_available(&mut self) -> Result<bool, Errno> {
+    pub fn smart_is_available(&self) -> Result<bool, Errno> {
         unsafe {
             let mut available: SkBool = 0;
             let ret = sk_disk_smart_is_available(self.skdisk, &mut available);
@@ -254,7 +254,7 @@ impl Disk {
     /// This function is unsafe because it dereferences raw pointers and calls an external C function.
     /// The caller must ensure that `parser_callback` and `userdata` are valid and that `self.skdisk` is properly initialized.
     pub unsafe fn parse_attributes(
-        &mut self,
+        &self,
         parser_callback: extern "C" fn(
             *mut SkDisk,
             *const SkSmartAttributeParsedData,
@@ -274,7 +274,7 @@ impl Disk {
 
     /// Query the device and return whether or not a particular smart test is supported on it
     pub fn smart_test_available(
-        &mut self,
+        &self,
         test_attributes: &mut SkSmartParsedData,
         test_type: SkSmartSelfTest,
     ) -> Result<bool, Errno> {
@@ -288,7 +288,7 @@ impl Disk {
         }
     }
 
-    pub fn execute_smart_self_test(&mut self, test_type: SkSmartSelfTest) -> Result<(), Errno> {
+    pub fn execute_smart_self_test(&self, test_type: SkSmartSelfTest) -> Result<(), Errno> {
         unsafe {
             let ret = sk_disk_smart_self_test(self.skdisk, test_type);
             if ret < 0 {
@@ -299,7 +299,7 @@ impl Disk {
         }
     }
 
-    pub fn smart_get_overall(&mut self) -> Result<SkSmartOverall, Errno> {
+    pub fn smart_get_overall(&self) -> Result<SkSmartOverall, Errno> {
         unsafe {
             let mut overall: SkSmartOverall = SkSmartOverall::SK_SMART_OVERALL_GOOD;
             let ret = sk_disk_smart_get_overall(self.skdisk, &mut overall);
@@ -313,7 +313,7 @@ impl Disk {
 
     /// Get the model, firmware, and serial of the disk as a IdentifyParsedDatastruct
     /// If Errno::EINVAL gets returned there is a problem with the C string parser
-    pub fn identify_parse(&mut self) -> Result<IdentifyParsedData, Errno> {
+    pub fn identify_parse(&self) -> Result<IdentifyParsedData, Errno> {
         let mut available: SkBool = 0;
         unsafe {
             sk_disk_identify_is_available(self.skdisk, &mut available);
